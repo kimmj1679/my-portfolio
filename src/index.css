@@ -17,18 +17,6 @@
   --color-link-hover: #65B8FF;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --color-bg-primary: #FFFFFF;
-    --color-bg-secondary: #F2F2F2;
-    --color-bg-tertiary: #E5E5E5;
-    --color-text-primary: #0F0F0F;
-    --color-text-secondary: #606060;
-    --color-text-muted: #909090;
-    --color-border: #CCCCCC;
-  }
-}
-
 * {
   box-sizing: border-box;
 }

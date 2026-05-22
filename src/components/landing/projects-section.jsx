@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
 import CircularProgress from '@mui/material/CircularProgress';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Link } from 'react-router-dom';
@@ -79,18 +80,19 @@ function ProjectsSection() {
             <CircularProgress sx={{ color: 'var(--color-primary)' }} />
           </Box>
         ) : (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Grid container spacing={3}>
             {projects.map(project => (
-              <ProjectCard
-                key={project.id}
-                title={project.title}
-                description={project.description}
-                techStack={project.tech_stack}
-                detailUrl={project.detail_url}
-                githubUrl={project.github_url}
-              />
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={project.id}>
+                <ProjectCard
+                  title={project.title}
+                  description={project.description}
+                  techStack={project.tech_stack}
+                  detailUrl={project.detail_url}
+                  githubUrl={project.github_url}
+                />
+              </Grid>
             ))}
-          </Box>
+          </Grid>
         )}
 
         {/* 더 보기 버튼 */}
