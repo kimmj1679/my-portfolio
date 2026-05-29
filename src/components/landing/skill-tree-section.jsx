@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -10,13 +11,15 @@ import AnimatedProgressBar from '../ui/animated-progress-bar';
 import { usePortfolio } from '../../context/portfolio-context';
 import { CATEGORY_COLORS } from '../../utils/skill-utils';
 
-function SkillTreeSection() {
-  const { getHomeData } = usePortfolio();
-  const { skills } = getHomeData();
+const SkillTreeSection = memo(function SkillTreeSection() {
+  // homeData는 useMemo로 계산된 값 — 불필요한 리렌더 없음
+  const { homeData } = usePortfolio();
+  const { skills } = homeData;
 
   return (
     <Box
       component='section'
+      aria-labelledby='skill-tree-heading'
       sx={{
         py: { xs: 8, md: 12 },
         backgroundColor: 'var(--color-bg-tertiary)',
@@ -34,11 +37,13 @@ function SkillTreeSection() {
               mb: 2,
               display: 'block',
             }}
+            aria-hidden='true'
           >
             SKILL TREE
           </Typography>
           <Typography
-            variant='h3'
+            id='skill-tree-heading'
+            variant='h2'
             sx={{
               color: 'var(--color-text-primary)',
               fontSize: { xs: '1.5rem', md: '2rem' },
@@ -59,11 +64,17 @@ function SkillTreeSection() {
           </Typography>
         </Box>
 
-        <Grid container spacing={ 2 } sx={{ mb: 5 }}>
+        <Grid
+          container
+          spacing={ 2 }
+          sx={{ mb: 5 }}
+          role='list'
+          aria-label='상위 기술 스택 목록'
+        >
           { skills.map((skill) => {
             const color = CATEGORY_COLORS[skill.category] || '#AAAAAA';
             return (
-              <Grid key={ skill.id } size={{ xs: 12, sm: 6 }}>
+              <Grid key={ skill.id } size={{ xs: 12, sm: 6 }} role='listitem'>
                 <Card
                   sx={{
                     backgroundColor: 'var(--color-bg-secondary)',
@@ -77,14 +88,25 @@ function SkillTreeSection() {
                 >
                   <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
-                      <Typography sx={{ color: 'var(--color-text-primary)', fontWeight: 600, fontSize: '0.95rem' }}>
+                      <Typography
+                        sx={{ color: 'var(--color-text-primary)', fontWeight: 600, fontSize: '0.95rem' }}
+                      >
                         { skill.name }
                       </Typography>
-                      <Typography sx={{ color, fontSize: '0.82rem', fontWeight: 700 }}>
+                      <Typography
+                        sx={{ color, fontSize: '0.82rem', fontWeight: 700 }}
+                        aria-label={ `${skill.level}퍼센트` }
+                      >
                         { skill.level }%
                       </Typography>
                     </Box>
-                    <AnimatedProgressBar value={ skill.level } color={ color } height={ 6 } delay={ 200 } />
+                    <AnimatedProgressBar
+                      value={ skill.level }
+                      color={ color }
+                      height={ 6 }
+                      delay={ 200 }
+                      ariaLabel={ `${skill.name} 숙련도` }
+                    />
                   </CardContent>
                 </Card>
               </Grid>
@@ -97,6 +119,7 @@ function SkillTreeSection() {
             variant='outlined'
             component={ Link }
             to='/about'
+            aria-label='About Me 페이지에서 전체 스킬 보기'
             sx={{
               color: 'var(--color-primary)',
               borderColor: 'var(--color-primary)',
@@ -106,6 +129,7 @@ function SkillTreeSection() {
               },
               px: 4,
               py: 1.5,
+              transition: 'all 0.3s ease',
             }}
           >
             전체 스킬 보기
@@ -114,6 +138,6 @@ function SkillTreeSection() {
       </Container>
     </Box>
   );
-}
+});
 
 export default SkillTreeSection;

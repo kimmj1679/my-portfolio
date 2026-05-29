@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useMemo, useCallback } from 'react';
 
 const PortfolioContext = createContext();
 
@@ -25,7 +25,8 @@ export function PortfolioProvider({ children }) {
     ],
   });
 
-  const getHomeData = () => {
+  // aboutMeData가 바뀔 때만 재계산 — 매 렌더마다 새 객체 생성 방지
+  const homeData = useMemo(() => {
     const homeContent = aboutMeData.sections
       .filter((section) => section.showInHome)
       .map((section) => ({
@@ -41,11 +42,39 @@ export function PortfolioProvider({ children }) {
       .slice(0, 4);
 
     return { content: homeContent, skills: topSkills, basicInfo: aboutMeData.basicInfo };
-  };
+  }, [aboutMeData]);
+
+  const updateSection = useCallback((sectionId, content) => {
+    setAboutMeData((prev) => ({
+      ...prev,
+      sections: prev.sections.map((s) =>
+        s.id === sectionId ? { ...s, content } : s
+      ),
+    }));
+  }, []);
+
+  const updatePhoto = useCallback((photoUrl) => {
+    setAboutMeData((prev) => ({
+      ...prev,
+      basicInfo: { ...prev.basicInfo, photo: photoUrl },
+    }));
+  }, []);
+
+  const addSkill = useCallback((newSkill) => {
+    setAboutMeData((prev) => ({
+      ...prev,
+      skills: [...prev.skills, { ...newSkill, id: Date.now(), showInMain: false }],
+    }));
+  }, []);
+
+  const value = useMemo(
+    () => ({ aboutMeData, homeData, updateSection, updatePhoto, addSkill }),
+    [aboutMeData, homeData, updateSection, updatePhoto, addSkill]
+  );
 
   return (
-    <PortfolioContext.Provider value={{ aboutMeData, setAboutMeData, getHomeData }}>
-      {children}
+    <PortfolioContext.Provider value={ value }>
+      { children }
     </PortfolioContext.Provider>
   );
 }
