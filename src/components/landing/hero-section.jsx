@@ -3,10 +3,23 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import { Link } from 'react-router-dom';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
-const TYPING_TEXTS = ['풀스택 개발자', 'AI 개발자', '문제 해결사'];
+const GITHUB_URL = 'https://github.com/kimmj1679';
+// 이력서 PDF를 public/resume.pdf 에 넣으면 자동 연결됩니다
+const RESUME_URL = '/my-portfolio/resume.pdf';
+
+// 타이핑 텍스트: 구체적인 기술명 중심으로 교체
+const TYPING_TEXTS = ['React & Python 개발자', 'AI 활용 빌더', '풀스택 웹 개발자'];
+
+// 기술 스택 배지 목록
+const TECH_STACK = ['React', 'Python', 'JavaScript', 'Supabase', 'CSS'];
+
 const TYPING_SPEED = 100;
 const ERASING_SPEED = 55;
 const PAUSE_DURATION = 2200;
@@ -60,7 +73,6 @@ function useTypingEffect(texts) {
 
 /**
  * 파티클 캔버스 배경 컴포넌트
- * 레드 파티클과 연결선을 Canvas API로 렌더링
  */
 function ParticleCanvas() {
   const canvasRef = useRef(null);
@@ -130,6 +142,7 @@ function ParticleCanvas() {
   return (
     <canvas
       ref={ canvasRef }
+      aria-hidden='true'
       style={{
         position: 'absolute',
         top: 0,
@@ -148,6 +161,7 @@ function HeroSection() {
   return (
     <Box
       component='section'
+      aria-label='소개 섹션'
       sx={{
         minHeight: '100vh',
         display: 'flex',
@@ -164,19 +178,46 @@ function HeroSection() {
       <Container maxWidth='md' sx={{ position: 'relative', zIndex: 1 }}>
         <Box sx={{ textAlign: 'center' }}>
 
-          {/* 인사말 */}
-          <Typography
-            variant='overline'
+          {/* 경력 레벨 배지 — "HELLO, I AM" 제거, 실질 정보로 교체 */}
+          <Box
             sx={{
-              color: 'var(--color-text-muted)',
-              fontSize: { xs: '0.7rem', md: '0.85rem' },
-              letterSpacing: 5,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 1.5,
               mb: 3,
-              display: 'block',
+              px: 2,
+              py: 0.6,
+              border: '1px solid var(--color-border)',
+              borderRadius: 10,
+              backgroundColor: 'rgba(255,255,255,0.03)',
             }}
           >
-            HELLO, I AM
-          </Typography>
+            <Box
+              sx={{
+                width: 7,
+                height: 7,
+                borderRadius: '50%',
+                backgroundColor: '#4CAF50',
+                boxShadow: '0 0 8px #4CAF50',
+                animation: 'pulse 2s ease-in-out infinite',
+                '@keyframes pulse': {
+                  '0%, 100%': { opacity: 1 },
+                  '50%': { opacity: 0.4 },
+                },
+              }}
+              aria-hidden='true'
+            />
+            <Typography
+              sx={{
+                color: 'var(--color-text-muted)',
+                fontSize: { xs: '0.68rem', md: '0.75rem' },
+                letterSpacing: 3,
+                fontWeight: 600,
+              }}
+            >
+              신입 · 풀스택 개발자 · 구직 중
+            </Typography>
+          </Box>
 
           {/* 이름 */}
           <Typography
@@ -202,18 +243,20 @@ function HeroSection() {
             </Box>
           </Typography>
 
-          {/* 타이핑 애니메이션 영역 */}
+          {/* 타이핑 애니메이션 — 구체적인 기술명으로 교체 */}
           <Box
             sx={{
               minHeight: { xs: '2.8rem', md: '3.8rem' },
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              mb: 4,
+              mb: 3,
             }}
           >
             <Typography
               component='span'
+              aria-live='polite'
+              aria-label={ `현재 직무: ${displayText}` }
               sx={{
                 color: 'var(--color-primary)',
                 fontSize: { xs: '1.4rem', md: '2.2rem' },
@@ -225,6 +268,7 @@ function HeroSection() {
               { displayText }
               <Box
                 component='span'
+                aria-hidden='true'
                 sx={{
                   display: 'inline-block',
                   width: { xs: '2px', md: '3px' },
@@ -243,49 +287,51 @@ function HeroSection() {
             </Typography>
           </Box>
 
-          {/* 서브 설명 */}
+          {/* 서브텍스트 — 구체적인 기술명 + 실증적 표현으로 교체 */}
           <Typography
             sx={{
               color: 'var(--color-text-secondary)',
-              fontSize: { xs: '0.95rem', md: '1.1rem' },
-              lineHeight: 2,
+              fontSize: { xs: '0.95rem', md: '1.05rem' },
+              lineHeight: 1.9,
               mb: 5,
-              maxWidth: 500,
+              maxWidth: 480,
               mx: 'auto',
             }}
           >
-            Frontend부터{' '}
             <Box
               component='span'
-              sx={{
-                color: 'var(--color-primary)',
-                fontWeight: 700,
-                textShadow: '0 0 10px rgba(255,46,46,0.4)',
-              }}
+              sx={{ color: 'var(--color-text-primary)', fontWeight: 600 }}
             >
-              AI
+              React, Python, Supabase
             </Box>
-            까지, 필요한 기술을 빠르게 습득하고{' '}
+            로 실제 서비스를 설계하고 직접 배포했습니다.{' '}
             <Box
               component='span'
-              sx={{
-                color: 'var(--color-primary)',
-                fontWeight: 700,
-                textShadow: '0 0 10px rgba(255,46,46,0.4)',
-              }}
+              sx={{ color: 'var(--color-primary)', fontWeight: 600 }}
             >
-              바로 적용
+              AI를 도구로 활용
             </Box>
-            합니다.
+            해 빠르게 제품을 만듭니다.
           </Typography>
 
-          {/* CTA 버튼 */}
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+          {/* CTA 버튼 그룹 */}
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              mb: 4,
+            }}
+          >
+            {/* 1순위: 프로젝트 보기 */}
             <Button
               variant='contained'
               component={ Link }
               to='/projects'
               size='large'
+              aria-label='프로젝트 목록 페이지로 이동'
               sx={{
                 backgroundColor: 'var(--color-primary)',
                 color: '#fff',
@@ -303,29 +349,110 @@ function HeroSection() {
             >
               프로젝트 보기
             </Button>
+
+            {/* 2순위: 이력서 다운로드 — 보조 버튼 가시성 개선 (레드 테두리) */}
             <Button
               variant='outlined'
-              component={ Link }
-              to='/about'
+              component='a'
+              href={ RESUME_URL }
+              download='김명준_이력서.pdf'
+              target='_blank'
+              rel='noopener noreferrer'
               size='large'
+              startIcon={ <FileDownloadIcon /> }
+              aria-label='이력서 PDF 다운로드'
               sx={{
-                color: 'var(--color-text-secondary)',
-                borderColor: 'var(--color-border)',
-                px: { xs: 3.5, md: 4.5 },
+                color: 'var(--color-primary)',
+                borderColor: 'var(--color-primary)',
+                px: { xs: 3, md: 4 },
                 py: 1.5,
                 fontSize: { xs: '0.9rem', md: '1rem' },
+                fontWeight: 600,
                 borderRadius: 1,
                 '&:hover': {
+                  backgroundColor: 'rgba(255,46,46,0.08)',
                   borderColor: 'var(--color-primary)',
-                  color: 'var(--color-primary)',
-                  backgroundColor: 'rgba(255,46,46,0.05)',
+                  boxShadow: '0 0 16px rgba(255,46,46,0.25)',
                 },
                 transition: 'all 0.3s ease',
               }}
             >
-              소개 보기
+              이력서 보기
             </Button>
+
+            {/* 3순위: GitHub 아이콘 링크 */}
+            <Tooltip title='GitHub 프로필 보기' arrow>
+              <IconButton
+                component='a'
+                href={ GITHUB_URL }
+                target='_blank'
+                rel='noopener noreferrer'
+                aria-label='GitHub 프로필 새 탭에서 열기'
+                sx={{
+                  color: 'var(--color-text-secondary)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: 1,
+                  p: 1.4,
+                  '&:hover': {
+                    color: 'var(--color-text-primary)',
+                    borderColor: 'var(--color-text-secondary)',
+                    backgroundColor: 'rgba(255,255,255,0.05)',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                <GitHubIcon fontSize='medium' />
+              </IconButton>
+            </Tooltip>
           </Box>
+
+          {/* 기술 스택 한 줄 — 텍스트 배지로 역량 즉시 전달 */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: { xs: 1, md: 0 },
+            }}
+            aria-label='주요 기술 스택'
+          >
+            { TECH_STACK.map((tech, index) => (
+              <Box
+                key={ tech }
+                sx={{ display: 'flex', alignItems: 'center' }}
+              >
+                <Typography
+                  sx={{
+                    color: 'var(--color-text-muted)',
+                    fontSize: { xs: '0.72rem', md: '0.78rem' },
+                    letterSpacing: 1.5,
+                    fontWeight: 500,
+                    fontFamily: 'monospace',
+                    px: { xs: 0, md: 1.5 },
+                    transition: 'color 0.2s ease',
+                    cursor: 'default',
+                    '&:hover': { color: 'var(--color-text-secondary)' },
+                  }}
+                >
+                  { tech }
+                </Typography>
+                { index < TECH_STACK.length - 1 && (
+                  <Box
+                    aria-hidden='true'
+                    sx={{
+                      width: 3,
+                      height: 3,
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--color-border)',
+                      display: { xs: 'none', md: 'block' },
+                    }}
+                  />
+                ) }
+              </Box>
+            )) }
+          </Box>
+
         </Box>
       </Container>
 
@@ -348,10 +475,9 @@ function HeroSection() {
           cursor: 'default',
           userSelect: 'none',
         }}
+        aria-hidden='true'
       >
-        <Typography
-          sx={{ fontSize: '0.6rem', letterSpacing: 3, color: 'var(--color-text-muted)' }}
-        >
+        <Typography sx={{ fontSize: '0.6rem', letterSpacing: 3, color: 'var(--color-text-muted)' }}>
           SCROLL
         </Typography>
         <KeyboardArrowDownIcon sx={{ fontSize: '1.1rem', color: 'var(--color-primary)', opacity: 0.8 }} />
