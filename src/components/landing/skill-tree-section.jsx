@@ -4,8 +4,16 @@ import Container from '@mui/material/Container';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
+import AnimatedProgressBar from '../ui/animated-progress-bar';
+import { usePortfolio } from '../../context/portfolio-context';
+import { CATEGORY_COLORS } from '../../utils/skill-utils';
 
 function SkillTreeSection() {
+  const { getHomeData } = usePortfolio();
+  const { skills } = getHomeData();
+
   return (
     <Box
       component='section'
@@ -38,7 +46,7 @@ function SkillTreeSection() {
               mb: 2,
             }}
           >
-            여기는 Skill Tree 섹션입니다.
+            주요 기술 스택
           </Typography>
           <Typography
             sx={{
@@ -47,37 +55,62 @@ function SkillTreeSection() {
               lineHeight: 1.8,
             }}
           >
-            기술 스택을 트리나 프로그레스바로 시각화할 예정입니다.
+            지속적으로 학습하며 새로운 기술을 쌓아가고 있습니다.
           </Typography>
         </Box>
-        <Grid container spacing={2} justifyContent='center'>
-          { ['Frontend', 'Backend', 'Tools'].map((category) => (
-            <Grid key={ category } size={{ xs: 12, md: 4 }}>
-              <Card
-                sx={{
-                  backgroundColor: 'var(--color-bg-secondary)',
-                  border: '1px solid var(--color-border)',
-                  textAlign: 'center',
-                  height: '100%',
-                }}
-              >
-                <CardContent sx={{ py: 4 }}>
-                  <Typography
-                    variant='h6'
-                    sx={{ color: 'var(--color-accent)', mb: 1 }}
-                  >
-                    { category }
-                  </Typography>
-                  <Typography
-                    sx={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}
-                  >
-                    기술 목록 예정
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          )) }
+
+        <Grid container spacing={ 2 } sx={{ mb: 5 }}>
+          { skills.map((skill) => {
+            const color = CATEGORY_COLORS[skill.category] || '#AAAAAA';
+            return (
+              <Grid key={ skill.id } size={{ xs: 12, sm: 6 }}>
+                <Card
+                  sx={{
+                    backgroundColor: 'var(--color-bg-secondary)',
+                    border: '1px solid var(--color-border)',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      borderColor: color,
+                      boxShadow: `0 0 12px ${color}33`,
+                    },
+                  }}
+                >
+                  <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+                      <Typography sx={{ color: 'var(--color-text-primary)', fontWeight: 600, fontSize: '0.95rem' }}>
+                        { skill.name }
+                      </Typography>
+                      <Typography sx={{ color, fontSize: '0.82rem', fontWeight: 700 }}>
+                        { skill.level }%
+                      </Typography>
+                    </Box>
+                    <AnimatedProgressBar value={ skill.level } color={ color } height={ 6 } delay={ 200 } />
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          }) }
         </Grid>
+
+        <Box sx={{ textAlign: 'center' }}>
+          <Button
+            variant='outlined'
+            component={ Link }
+            to='/about'
+            sx={{
+              color: 'var(--color-primary)',
+              borderColor: 'var(--color-primary)',
+              '&:hover': {
+                backgroundColor: 'var(--color-primary)',
+                color: 'var(--color-text-primary)',
+              },
+              px: 4,
+              py: 1.5,
+            }}
+          >
+            전체 스킬 보기
+          </Button>
+        </Box>
       </Container>
     </Box>
   );
